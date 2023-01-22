@@ -1,25 +1,58 @@
-const express = require('express')
+const express = require("express");
+const contactsDb = require("../../models/contacts");
+const { HttpError } = require("../helpers/index");
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/", async (req, res, next) => {
+  const contacts = await contactsDb.listContacts();
+  if (!contacts) {
+    return next(HttpError(404, "No contacts"));
+  }
+  return res.json(contacts);
+});
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/:contactId", async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await contactsDb.getContactById(contactId);
+  if (!contact) {
+    next(HttpError(404, "Contact not found"));
+  }
+  return res.json(contact);
+});
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.post("/", async (req, res, next) => {
+  const { name, email, phone } = req.body;
+  if (!name || !email || !phone) {
+    return next(HttpError(400, "missing required name field"));
+  }
+  const newContact = await contactsDb.addContact(name, email, phone);
+  res.status(201).json(newContact);
+});
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.delete("/:contactId", async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await contactsDb.getContactById(contactId);
+  if (!contact) {
+    return next(HttpError(404, "No contact"));
+  }
+  await contactsDb.removeContact(contactId);
+  return res.status(200).json({ message: "contact deleted" });
+});
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.put("/:contactId", async (req, res, next) => {
+  const { contactId } = req.params;
+  console.log(req);
+  const body = req.body;
+  if (Object.keys(body).length == 0) {
+    return next(HttpError(400, "missing fields"));
+  }
+  const contact = await contactsDb.getContactById(contactId);
+  if (!contact) {
+    return next(HttpError(404, "No contact"));
+  }
+  const updatedContact = await contactsDb.updateContact(contactId, body);
+  res.status(200).json(updatedContact);
+});
 
-module.exports = router
+module.exports = router;
