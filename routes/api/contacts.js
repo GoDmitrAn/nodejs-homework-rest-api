@@ -68,7 +68,7 @@ router.put("/:contactId", async (req, res, next) => {
   }
 
   const body = req.body;
-  if (Object.keys(body).length == 0) {
+  if (Object.keys(body).length === 0) {
     return next(HttpError(400, "missing fields"));
   }
   const contact = await contactsDb.getContactById(contactId);

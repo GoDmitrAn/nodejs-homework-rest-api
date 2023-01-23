@@ -22,7 +22,7 @@ async function writeContactsDb(db) {
 
 const listContacts = async () => {
   try {
-    let list = await readContactsDb();
+    const list = await readContactsDb();
     return list;
   } catch (error) {
     console.log(error);
@@ -32,7 +32,7 @@ const listContacts = async () => {
 const getContactById = async (contactId) => {
   try {
     const db = await readContactsDb();
-    let contact = db.find((element) => element.id === String(contactId));
+    const contact = db.find((element) => element.id === String(contactId));
 
     return contact;
   } catch (error) {
@@ -43,7 +43,7 @@ const getContactById = async (contactId) => {
 const removeContact = async (contactId) => {
   try {
     const db = await readContactsDb();
-    let index = db.findIndex((element) => element.id === String(contactId));
+    const index = db.findIndex((element) => element.id === String(contactId));
     db.splice(index, 1);
     await writeContactsDb(db);
   } catch (error) {
@@ -53,7 +53,7 @@ const removeContact = async (contactId) => {
 
 const addContact = async (name, email, phone) => {
   try {
-    id = nanoid();
+    const id = nanoid();
     const contactUser = { id, name, email, phone };
     const db = await readContactsDb();
     db.push(contactUser);
@@ -67,9 +67,9 @@ const addContact = async (name, email, phone) => {
 const updateContact = async (contactId, body) => {
   try {
     const db = await readContactsDb();
-    let contact = db.find((element) => element.id === String(contactId));
-    let index = db.findIndex((element) => element.id === String(contactId));
-    let updatedContact = { ...contact, ...body };
+    const contact = db.find((element) => element.id === String(contactId));
+    const index = db.findIndex((element) => element.id === String(contactId));
+    const updatedContact = { ...contact, ...body };
     db.splice(index, 1, updatedContact);
     await writeContactsDb(db);
     return updatedContact;
