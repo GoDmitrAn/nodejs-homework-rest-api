@@ -70,7 +70,6 @@ const updateContact = async (contactId, body) => {
     let contact = db.find((element) => element.id === String(contactId));
     let index = db.findIndex((element) => element.id === String(contactId));
     let updatedContact = { ...contact, ...body };
-    console.log(updatedContact);
     db.splice(index, 1, updatedContact);
     await writeContactsDb(db);
     return updatedContact;
