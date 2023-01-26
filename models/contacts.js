@@ -1,87 +1,28 @@
-const fs = require("fs/promises");
-const { nanoid } = require("nanoid");
-const path = require("path");
-const contactsPath = path.resolve(__dirname, "contacts.json");
+const mongoose = require("mongoose");
 
-async function readContactsDb() {
-  try {
-    const dbRaw = await fs.readFile(contactsPath, "utf8");
-    const db = JSON.parse(dbRaw);
-    return db;
-  } catch (error) {
-    console.log("Please reload", error);
+const schema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Set name for contact"],
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    versionKey: false,
+    timestamps: true,
   }
-}
-async function writeContactsDb(db) {
-  try {
-    await fs.writeFile(contactsPath, JSON.stringify(db, null, 2));
-  } catch (error) {
-    console.log(error);
-  }
-}
+);
 
-const listContacts = async () => {
-  try {
-    const list = await readContactsDb();
-    return list;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const getContactById = async (contactId) => {
-  try {
-    const db = await readContactsDb();
-    const contact = db.find((element) => element.id === String(contactId));
-
-    return contact;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const removeContact = async (contactId) => {
-  try {
-    const db = await readContactsDb();
-    const index = db.findIndex((element) => element.id === String(contactId));
-    db.splice(index, 1);
-    await writeContactsDb(db);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const addContact = async (name, email, phone) => {
-  try {
-    const id = nanoid();
-    const contactUser = { id, name, email, phone };
-    const db = await readContactsDb();
-    db.push(contactUser);
-    await writeContactsDb(db);
-    return contactUser;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const updateContact = async (contactId, body) => {
-  try {
-    const db = await readContactsDb();
-    const contact = db.find((element) => element.id === String(contactId));
-    const index = db.findIndex((element) => element.id === String(contactId));
-    const updatedContact = { ...contact, ...body };
-    db.splice(index, 1, updatedContact);
-    await writeContactsDb(db);
-    return updatedContact;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-module.exports = {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
-};
+//model(class)
+const Contacts = mongoose.model("contacts", schema);
+module.exports = { Contacts };
