@@ -1,4 +1,3 @@
-// const contactsDb = require("../models/contactsDb");
 const { HttpError } = require("../routes/helpers/index");
 const { Contacts } = require("../models/contacts");
 
@@ -20,8 +19,8 @@ async function getContact(req, res, next) {
 }
 
 async function createContact(req, res, next) {
-  const { name, email, phone } = req.body;
-  const newContact = await Contacts.create({ name, email, phone });
+  const { name, email, phone, favorite } = req.body;
+  const newContact = await Contacts.create({ name, email, phone, favorite });
   res.status(201).json(newContact);
 }
 

@@ -6,14 +6,16 @@ const createContactSchema = Joi.object({
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .required(),
   phone: Joi.string().required(),
+  favorite: Joi.string(),
 });
 const updateContactSchema = Joi.object({
-  name: Joi.string().alphanum().min(3),
+  name: Joi.string(),
   email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net"] },
   }),
   phone: Joi.string(),
+  favorite: Joi.string(),
 });
 module.exports = {
   createContactSchema,

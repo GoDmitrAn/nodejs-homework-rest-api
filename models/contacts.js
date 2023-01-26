@@ -14,6 +14,7 @@ const schema = mongoose.Schema(
     },
     favorite: {
       type: Boolean,
+      enum: ["true", "false"],
       default: false,
     },
   },
