@@ -8,7 +8,7 @@ const {
   deleteContact,
   updateContact,
   updateStatusContact,
-} = require("../../controllers/contacts.controller");
+} = require("../../controllers/contacts/index");
 const { validateBody, validateUpdateBody } = require("../../middlewares/index");
 const {
   createContactSchema,
