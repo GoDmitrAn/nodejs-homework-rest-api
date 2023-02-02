@@ -24,7 +24,8 @@ const schema = mongoose.Schema(
   },
   {
     versionKey: false,
-    timestamps: true,
+    timestamps: true, //add create and update fields
   }
 );
-const User = mongoose.model("user", schema);
+const Users = mongoose.model("users", schema);
+module.exports = { Users };
