@@ -1,17 +1,23 @@
 const { Users } = require("../../models/users");
 const { HttpError } = require("../../routes/helpers/index");
+const bcrypt = require("bcrypt");
 
 async function register(req, res, next) {
-  const { email, password, subscription } = req.body;
+  const { email, password } = req.body;
+
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(password, salt);
   try {
     const savedUser = await Users.create({
       email,
-      password,
-      subscription,
+      password: hashedPassword,
     });
     res.status(201).json({
       data: {
-        user: savedUser,
+        user: {
+          email,
+          subscription: savedUser.subscription,
+        },
       },
     });
   } catch (error) {
