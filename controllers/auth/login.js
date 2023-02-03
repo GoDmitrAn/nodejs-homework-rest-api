@@ -9,18 +9,24 @@ async function loginUser(req, res, next) {
   const { email, password } = req.body;
   const storedUser = await Users.findOne({ email });
   if (!storedUser) {
-    throw HttpError(401, "email is not valid");
+    throw HttpError(401, "Email or password is wrong");
   }
   const isPassword = await bcrypt.compare(password, storedUser.password);
   if (!isPassword) {
-    throw HttpError(401, "password is not valid");
+    throw HttpError(401, "Email or password is wrong");
   }
   const token = jwt.sign({ id: storedUser._id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 
   await Users.findByIdAndUpdate(storedUser._id, { token: token });
-  res.json({ token });
+  res.json({
+    token,
+    user: {
+      email: email,
+      subscription: storedUser.subscription,
+    },
+  });
 }
 
 module.exports = { loginUser };
