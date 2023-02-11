@@ -17,6 +17,10 @@ const schema = mongoose.Schema(
       enum: ["true", "false"],
       default: false,
     },
+    owner: {
+      type: mongoose.Types.ObjectId,
+      ref: "users",
+    },
   },
   {
     versionKey: false,
