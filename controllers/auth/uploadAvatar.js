@@ -5,7 +5,7 @@ var Jimp = require("jimp");
 const { nanoid } = require("nanoid");
 
 async function uploadAvatar(req, res, next) {
-  const { filename } = req.file;
+  const { filename, path: temporaryName } = req.file;
 
   try {
     const tmpPath = path.resolve(__dirname, "../../tmp", filename);
@@ -16,19 +16,30 @@ async function uploadAvatar(req, res, next) {
     );
 
     const { user } = req;
-    const { id } = user;
+    const { id, email } = user;
+    const [emailName, serverName] = email.split("@");
+    const [namePart, extensionPart] = filename.split(".");
 
     //   resize image
     let image = await Jimp.read(tmpPath);
     image.resize(250, 250);
-    const randomNumber = nanoid(5);
-    const newFileName = randomNumber + filename;
-    console.log(newFileName);
+    // const randomNumber = nanoid(3);
+    const newFileName =
+      emailName + "-" + nanoid(3) + "-avatar" + "." + extensionPart;
+    console.log("newFileName", newFileName);
     image.write("./tmp/" + filename);
 
-    await fs.rename(tmpPath, publicPath);
+    //rename and move file to public directory
+    await fs.rename(
+      path.resolve(__dirname, "../../tmp", filename),
+      path.resolve(__dirname, "../../tmp", newFileName)
+    );
+    await fs.rename(
+      path.resolve(__dirname, "../../tmp", newFileName),
+      path.resolve(__dirname, "../../public/avatars", newFileName)
+    );
 
-    const avatarPath = `/public/avatars/${filename}`;
+    const avatarPath = `/public/avatars/${newFileName}`;
     const storedUser = await Users.findByIdAndUpdate(
       id,
       {
@@ -41,6 +52,7 @@ async function uploadAvatar(req, res, next) {
   } catch (error) {
     console.error("error while moving file to avatars ", error);
     await fs.unlink(tmpPath);
+    await fs.unlink(path.resolve(__dirname, "../../tmp", newFileName));
     return res.status(500).json({ message: "internal server error" });
   }
 }
