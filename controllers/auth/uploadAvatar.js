@@ -1,6 +1,8 @@
 const path = require("path");
 const fs = require("fs/promises");
 const { Users } = require("../../models/users");
+var Jimp = require("jimp");
+const { nanoid } = require("nanoid");
 
 async function uploadAvatar(req, res, next) {
   const { filename } = req.file;
@@ -12,10 +14,20 @@ async function uploadAvatar(req, res, next) {
       "../../public/avatars",
       filename
     );
-    await fs.rename(tmpPath, publicPath);
 
     const { user } = req;
     const { id } = user;
+
+    //   resize image
+    let image = await Jimp.read(tmpPath);
+    image.resize(250, 250);
+    const randomNumber = nanoid(5);
+    const newFileName = randomNumber + filename;
+    console.log(newFileName);
+    image.write("./tmp/" + filename);
+
+    await fs.rename(tmpPath, publicPath);
+
     const avatarPath = `/public/avatars/${filename}`;
     const storedUser = await Users.findByIdAndUpdate(
       id,
