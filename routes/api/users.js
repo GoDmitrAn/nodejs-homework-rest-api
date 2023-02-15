@@ -9,6 +9,7 @@ const { uploadAvatar } = require("../../controllers/auth/uploadAvatar");
 const { tryCatchWrapper } = require("../helpers");
 const { auth, validateBody, upload } = require("../../middlewares/index");
 const { usersSchema } = require("../../schemas/users");
+const { verifyUser } = require("../../controllers/auth/verify");
 
 const authRouter = express.Router();
 
@@ -30,6 +31,7 @@ authRouter.patch(
   tryCatchWrapper(upload.single("avatar")),
   tryCatchWrapper(uploadAvatar)
 );
+authRouter.get("/verify/:verificationToken", tryCatchWrapper(verifyUser));
 
 module.exports = {
   authRouter,
