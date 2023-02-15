@@ -3,7 +3,7 @@ const { HttpError } = require("../../routes/helpers/index");
 const { nanoid } = require("nanoid");
 const bcrypt = require("bcrypt");
 var gravatar = require("gravatar");
-// const { SEND_GRID_KEY } = process.env;
+
 const sendGrid = require("@sendgrid/mail");
 
 async function register(req, res, next) {
@@ -26,8 +26,8 @@ async function register(req, res, next) {
       to: "iqbitsak@gmail.com",
       from: "iqbitsak@gmail.com",
       subject: "Sending with SendGrid is Fun",
-      text: "and easy to do anywhere, even with Node.js",
-      html: "<h1> Hello there!</h1>",
+      text: `and easy to do anywhere, even with Node.js. <a href="/users/verify/${verificationToken}"> verify</a>  `,
+      html: `<h1> Hello there! <a href="/users/verify/${verificationToken}"> verify</a> </h1>`,
     };
     const response = await sendGrid.send(emailMsg);
     console.log(response);
