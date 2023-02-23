@@ -26,11 +26,10 @@ async function register(req, res, next) {
       to: "iqbitsak@gmail.com",
       from: "iqbitsak@gmail.com",
       subject: "Sending with SendGrid is Fun",
-      text: `and easy to do anywhere, even with Node.js. <a href="/users/verify/${verificationToken}"> verify</a>  `,
-      html: `<h1> Hello there! <a href="/users/verify/${verificationToken}"> verify</a> </h1>`,
+      text: `Please confirm your email <a href="http://localhost:3000/api/users/verify/${verificationToken}"> verify</a>  `,
+      html: `<h1>Please confirm your email <a href="http://localhost:3000/api/users/verify/${verificationToken}"> verify</a> </h1>`,
     };
-    const response = await sendGrid.send(emailMsg);
-    console.log(response);
+    await sendGrid.send(emailMsg);
 
     res.status(201).json({
       data: {

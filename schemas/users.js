@@ -11,7 +11,7 @@ const usersSchema = Joi.object({
   subscription: Joi.string(),
   token: Joi.string(),
   verificationToken: Joi.string(),
-  verify: Joi.string(),
+  verify: Joi.boolean(),
 });
 const usersLoginSchema = Joi.object({
   password: Joi.string()
